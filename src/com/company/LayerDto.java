@@ -1,14 +1,25 @@
 package com.company;
 
 import java.util.List;
+import java.util.Objects;
 
 public class LayerDto {
+    private Integer id;
     private String name;
     private List<ObjectDto> objects;
 
-    public LayerDto(String name, List<ObjectDto> objects) {
+    public LayerDto(Integer id, String name, List<ObjectDto> objects) {
+        this.id = id;
         this.name = name;
         this.objects = objects;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -30,8 +41,22 @@ public class LayerDto {
     @Override
     public String toString() {
         return "LayerDto{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", objects=" + objects +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LayerDto layerDto = (LayerDto) o;
+        return id.equals(layerDto.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

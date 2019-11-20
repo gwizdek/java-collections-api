@@ -10,7 +10,7 @@ import static java.util.stream.Collectors.*;
 public class Main {
 
     public static void main(String[] args) {
-	// write your code here
+        // write your code here
         List<SystemObjectList> items = Arrays.asList(
                 new SystemObjectList(1, 1, "SA", 1, "OA", 1, "APP"),
                 new SystemObjectList(2, 1, "SA", 2, "OB", 2, "OS"),
@@ -21,41 +21,35 @@ public class Main {
 
         );
 
-
-//        Map<Integer, List>
-
-        Map<Integer, Map<Integer, List<SystemObjectList>>> groupBy =
+        Map<SystemDto, Map<LayerDto, List<SystemObjectList>>> systemMap =
                 items.stream().collect(
                         groupingBy(
-                                SystemObjectList::getSystemId,
+                                (SystemObjectList item) -> new SystemDto(item.getSystemId(), item.getSystemName(), null, null),
                                 groupingBy(
-                                        SystemObjectList::getObjectTypeId
+                                        (SystemObjectList item) -> new LayerDto(item.getObjectTypeId(), item.getObjectTypeName(), null)
                                 )
                         )
                 );
 
-//        List<SystemDto> systems = groupBy.entrySet().stream()
-//                .map(s -> new SystemDto(s.getKey(), s.getValue()));
+        List<SystemDto> systems = systemMap.entrySet().stream()
+                .map(systemKey ->
+                        new SystemDto(
+                                systemKey.getKey().getId(),
+                                systemKey.getKey().getName(),
+                                systemKey.getKey().getStatusName(),
+                                systemKey.getValue().entrySet().stream()
+                                        .map(layerKey -> new LayerDto(
+                                                layerKey.getKey().getId(),
+                                                layerKey.getKey().getName(),
+                                                layerKey.getValue().stream()
+                                                        .map(val -> new ObjectDto(val.getObjectId(), val.getObjectName()))
+                                                        .collect(toList())
+                                        ))
+                                        .collect(toList())
+                        )
+                ).collect(toList());
 
-//        Map<Integer, List<ObjectDto>> groupBy =
-//                items.stream()
-//                        .map(item -> new ObjectDto(item.getObjectId(), item.getObjectName()))
-//                        .collect(Collectors.groupingBy(SystemObjectList::getSystemId));
-
-//        List<SystemDto> systems = groupBy.entrySet().stream()
-//                .map(e -> new SystemDto(
-//                        e.getKey(),
-//                        "test",
-//                        "status",
-//                        e.getValue().stream()
-//                                .map(systemObject-> new ObjectDto(systemObject.getObjectId(), systemObject.getObjectName()))
-//                                .collect(Collectors.toList())
-//                        )
-//                )
-//                .collect(Collectors.toList());
-
-//        systems.stream().forEach(System.out::println);
-
-        groupBy.entrySet().stream().forEach(System.out::println);
+        System.out.println(systems);
     }
 }
+

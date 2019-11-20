@@ -1,6 +1,7 @@
 package com.company;
 
 import java.util.List;
+import java.util.Objects;
 
 public class SystemDto {
     private Integer id;
@@ -55,6 +56,19 @@ public class SystemDto {
                 ", statusName='" + statusName + '\'' +
                 ", layers=" + layers +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SystemDto systemDto = (SystemDto) o;
+        return id.equals(systemDto.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
 
